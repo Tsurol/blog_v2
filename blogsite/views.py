@@ -36,4 +36,4 @@ class CommentViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = Comment.objects.filter(is_valid=True).order_by('-created_at')
     pagination_class = PageNumberPagination
     serializer_class = CommentSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]  # todo 测试jwt

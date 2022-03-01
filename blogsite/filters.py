@@ -31,7 +31,7 @@ class BlogFilter(filters.FilterSet):
                 .exclude(id=value)
             if queryset.count() >= 5:
                 queryset = queryset[:5]
-            elif queryset.count() == 0:
+            elif queryset.count == 0:
                 queryset = Blog.objects.filter(is_valid=True).order_by('-created_at')[:5]
         else:
             queryset = Blog.objects.filter(is_valid=True).order_by('-created_at')[:5]

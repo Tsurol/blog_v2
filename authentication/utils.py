@@ -1,3 +1,4 @@
+import base64
 import random
 import smtplib
 import time
@@ -11,6 +12,8 @@ from django.db.models import Q
 import http.client
 import json
 from urllib.parse import urlencode
+
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 def verify_code():
@@ -98,3 +101,27 @@ class CustomBackend(ModelBackend):
         except Exception as e:
             print(e)
             return None
+
+
+def get_tokens_for_user(user):
+    """ 手动创建JWT令牌 """
+    refresh = RefreshToken.for_user(user)
+
+    return {
+        'refresh': str(refresh),
+        'access': str(refresh.access_token),
+    }
+
+
+def decode_base64(data):
+    """Decode base64, padding being optional.
+    :param data: Base64 data as an ASCII byte string
+    :returns: The decoded byte string.
+
+    """
+    # base64长度是4的倍数，如果不足，需要用'='补齐
+    missing_padding = 4 - len(data) % 4
+    if missing_padding:
+        data += '=' * missing_padding
+    return str(base64.b64decode(data),
+               encoding='utf-8')

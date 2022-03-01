@@ -196,10 +196,10 @@ EM_CONF = {
 
 # simple-jwt 配置信息解释
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),  # 设置token有效时间
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),  # 刷新token有效时间
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),  # 设置token有效时间
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=15),  # 刷新token有效时间
     'ROTATE_REFRESH_TOKENS': False,
-    'BLACKLIST_AFTER_ROTATION': False,
+    'BLACKLIST_AFTER_ROTATION': False,  # 若为True，刷新后的token将添加到黑名单中
     'UPDATE_LAST_LOGIN': True,  # 设置为True会在用户登录时，更新user表中的last_login字段
 
     'ALGORITHM': 'HS256',  # 加密算法

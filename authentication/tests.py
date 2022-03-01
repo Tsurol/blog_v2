@@ -1,5 +1,6 @@
 import base64
 import time
+import ast
 
 
 def timestamp_to_datetime(timestamp):
@@ -30,11 +31,14 @@ def decode_base64(data):
 
 
 if __name__ == '__main__':
-    code = 'eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY0NTczMjM5NCwiaWF0IjoxNjQ1NjQ1OTk0LCJqdGkiOiI2MWYwY2Q2NmEzN2E0NWM4OWIyMzE5NTlmNjAwM2YyMSIsInVzZXJfaWQiOjMsIm1vYmlsZSI6IjEzNzc4MjYwNDY2Iiwibmlja25hbWUiOiJcdTYwYzVcdTRmNTVcdTRlZTVcdTU4MmFcdTIwMTQiLCJlbWFpbCI6ImFkbWluMTEyQHFxLmNvbSJ9'
-    code2 = 'eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY0NTczMjM5NCwiaWF0IjoxNjQ1NjQ1OTk0LCJqdGkiOiI2MWYwY2Q2NmEzN2E0NWM4OWIyMzE5NTlmNjAwM2YyMSIsInVzZXJfaWQiOjN9'
+    code = 'eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY0NjAyMzM4NywiaWF0IjoxNjQ2MDIzMjY3LCJqdGkiOiI1MGZhMDVkMTk5NDA0MmRkYWE4YzE0ZjFjYjNiOWUzNSIsInVzZXJfaWQiOjN9'
+    code2 = 'eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY0NjAyMzM4NywiaWF0IjoxNjQ2MDIzMjY3LCJqdGkiOiI1MGZhMDVkMTk5NDA0MmRkYWE4YzE0ZjFjYjNiOWUzNSIsInVzZXJfaWQiOjMsIm1vYmlsZSI6IjEzNzc4MjYwNDY2Iiwibmlja25hbWUiOiJcdTYwYzVcdTRmNTVcdTRlZTVcdTU4MmFcdTIwMTQiLCJlbWFpbCI6ImFkbWluMTEyQHFxLmNvbSJ9'
     res = decode_base64(code)
+    res_dict = ast.literal_eval(res).get('jti', None)
     res2 = decode_base64(code2)
-    print(res)
+    print(res, type(code))
+    # print(res_dict, type(res_dict))
     print(res2)
-    # print(timestamp_to_datetime(1645635737))
-    # print(timestamp_to_datetime(1645635917))
+    # print(timestamp_to_datetime(1647318740))
+    # print(timestamp_to_datetime(1645887317), type(timestamp_to_datetime(1645887317)))
+#

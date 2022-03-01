@@ -21,7 +21,7 @@ from django.urls import path, include, re_path
 from django.views.static import serve
 from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshView)
 
-from authentication.views import MyTokenObtainPairView
+from authentication.views import MyTokenObtainPairView, BlacklistRefreshView, DeleteUserView
 from blogsite.urls import router as router_blog
 from authentication.urls import router as router_auth
 
@@ -29,8 +29,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/blog/', include(router_blog.urls)),
     path('api/auth/', include(router_auth.urls)),
-    path('jwt/token/', MyTokenObtainPairView.as_view(), name='jwt_obtain'),
-    path('jwt/token/refresh/', TokenRefreshView.as_view(), name='jwt_refresh'),
+    path('login/', MyTokenObtainPairView.as_view(), name='jwt_obtain'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='jwt_refresh'),
+    path('logout/', BlacklistRefreshView.as_view(), name='jwt_logout'),
+    path('del/', DeleteUserView.as_view(), name='jwt_del'),
     re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
     # todo:后期需要改成STATIC_ROOT
     re_path(r'^static/(?P<path>.*)/$', serve, {'document_root': settings.STATICFILES_DIRS}),
