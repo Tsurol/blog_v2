@@ -30,9 +30,10 @@ urlpatterns = [
     path('api/blog/', include(router_blog.urls)),
     path('api/auth/', include(router_auth.urls)),
     path('login/', MyTokenObtainPairView.as_view(), name='jwt_obtain'),
+    path('register/', MyTokenObtainPairView.as_view(), name='jwt_obtain'),  # todo 注册 2022/3/7
     path('token/refresh/', TokenRefreshView.as_view(), name='jwt_refresh'),
     path('logout/', BlacklistRefreshView.as_view(), name='jwt_logout'),
-    path('del/', DeleteUserView.as_view(), name='jwt_del'),
+    path('user/del/', DeleteUserView.as_view(), name='jwt_del'),
     re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
     # todo:后期需要改成STATIC_ROOT
     re_path(r'^static/(?P<path>.*)/$', serve, {'document_root': settings.STATICFILES_DIRS}),

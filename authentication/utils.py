@@ -125,3 +125,16 @@ def decode_base64(data):
         data += '=' * missing_padding
     return str(base64.b64decode(data),
                encoding='utf-8')
+
+
+def timestamp_to_datetime(timestamp):
+    """
+    timestamp:时间戳
+    将时间戳转换为日期格式字符串
+    :return:日期格式字符串
+    """
+    # 首先需要将时间戳转换成localtime，再转换成时间的具体格式
+    time_local = time.localtime(timestamp)
+    # 利用strftime()函数重新格式化时间
+    datetime_str = time.strftime("%Y-%m-%d %H:%M:%S", time_local)
+    return datetime_str

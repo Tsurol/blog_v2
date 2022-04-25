@@ -16,11 +16,11 @@ from authentication.models import AuthUser
 # Category.objects.create(name='技术博客')
 # Category.objects.create(name='转载文档')
 
-category1 = Category.objects.filter(name='学习笔记').first()
-category2 = Category.objects.filter(name='技术博客').first()
-category3 = Category.objects.filter(name='转载文档').first()
-user_test = AuthUser.objects.get(id=3)
-random_cat = [category3, category2, category1]
+# category1 = Category.objects.filter(name='学习笔记').first()
+# category2 = Category.objects.filter(name='技术博客').first()
+# category3 = Category.objects.filter(name='转载文档').first()
+user_test = AuthUser.objects.get(id=1)
+# random_cat = [category3, category2, category1]
 
 # for i in range(1, 26):
 #     Blog.objects.create(title='测试标题{}'.format(i), desc='测试简述{}'.format(i),

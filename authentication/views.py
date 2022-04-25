@@ -1,3 +1,4 @@
+import ast
 import json
 
 from django.db import transaction
@@ -7,7 +8,7 @@ from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from rest_framework import mixins, viewsets, status
 from rest_framework.exceptions import Throttled
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView, UpdateAPIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -15,7 +16,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from authentication.serializers import EmailCodeSerializer, PhoneCodeSerializer, MyTokenObtainPairSerializer, \
     BlacklistRefreshSerializer, DelUserSerializer
 from authentication.throttle import CodeRateThrottle, LoginRateThrottle
-from authentication.utils import verify_code, send_email, send_sms
+from authentication.utils import verify_code, send_email, send_sms, decode_base64
 
 User = get_user_model()
 
@@ -128,7 +129,7 @@ class BlacklistRefreshView(mixins.CreateModelMixin, GenericAPIView):
         }, status=status.HTTP_201_CREATED)
 
 
-class DeleteUserView(mixins.UpdateModelMixin, GenericAPIView):
+class DeleteUserView(mixins.CreateModelMixin, GenericAPIView):
     """
     注销用户账号
     1.从客户端删除 刷新和访问令牌
@@ -137,12 +138,32 @@ class DeleteUserView(mixins.UpdateModelMixin, GenericAPIView):
     """
     serializer_class = DelUserSerializer
 
-    def update(self, request, *args, **kwargs):
-        partial = kwargs.pop('partial', False)
-        instance = self.get_object()
-        # 默认情况下，序列化程序必须为所有必填字段传递值，否则它们会引发验证错误。您可以使用该partial参数以允许部分更新。
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        with transaction.atomic():
-            pass
-        return Response(serializer.data)
+        refresh = serializer.validated_data['refresh_token']
+        payload = refresh.split('.')[1]
+        payload = decode_base64(payload)
+        user_id = ast.literal_eval(payload).get('user_id', None)
+        user = User.objects.filter(id=user_id, is_active=True).first()
+        if not user:
+            return Response({
+                'msg': '用户不存在'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        refresh_token = RefreshToken(refresh)
+        try:
+            with transaction.atomic():
+                user.is_active = False
+                user.profile.is_valid = False
+                user.save()
+                user.profile.save()
+                refresh_token.blacklist()
+        except Exception as e:
+            print(e)
+            return Response({
+                'msg': '注销用户操作失败，请检查服务端',
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response({
+            'msg': '已成功注销账号',
+            'user': user_id
+        }, status=status.HTTP_201_CREATED)

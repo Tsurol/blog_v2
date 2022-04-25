@@ -8,7 +8,7 @@ from django.contrib.auth.models import update_last_login
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.settings import api_settings
-from rest_framework_simplejwt.token_blacklist.models import OutstandingToken
+from rest_framework_simplejwt.token_blacklist.models import OutstandingToken, BlacklistedToken
 
 from authentication.utils import decode_base64
 
@@ -117,4 +117,24 @@ class BlacklistRefreshSerializer(serializers.Serializer):
 class DelUserSerializer(serializers.Serializer):
     refresh_token = serializers.CharField(max_length=625, required=True,
                                           allow_blank=False, write_only=True)
-    # todo 2.28
+
+    def validate_refresh_token(self, refresh_token):
+        # 通过decode先得到jti
+        try:
+            payload = refresh_token.split('.')[1]
+            payload = decode_base64(payload)
+            jti = eval(payload).get('jti', None)
+            exp = eval(payload).get('exp', None)
+        except Exception as e:
+            print(e)
+            raise serializers.ValidationError("该令牌格式错误")
+        token_qs = OutstandingToken.objects.filter(jti=jti).first()
+        token_id = token_qs.id
+        if not token_qs:
+            raise serializers.ValidationError("该令牌不存在")
+        ts = time.time()
+        if ts > exp:
+            raise serializers.ValidationError('该令牌已过期')
+        if BlacklistedToken.objects.filter(token_id=token_id).first():
+            raise serializers.ValidationError('该令牌已被拉黑')
+        return refresh_token
