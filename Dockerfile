@@ -2,7 +2,7 @@ FROM python:3.7.5-slim-buster
 
 WORKDIR /root/blog_v2
 
-ADD ./requirements.txt /root/xintongyuan_backend
+ADD ./requirements.txt /root/blog_v2
 
 RUN pip3 install --upgrade pip -i http://mirrors.aliyun.com/pypi/simple/ --trusted-host mirrors.aliyun.com
 
