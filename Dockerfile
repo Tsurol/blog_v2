@@ -4,9 +4,7 @@ WORKDIR /root/blog_v2
 
 ADD ./requirements.txt /root/blog_v2
 
-RUN pip3 install --upgrade pip -i http://mirrors.aliyun.com/pypi/simple/ --trusted-host mirrors.aliyun.com
-
-RUN pip3 install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/ --trusted-host mirrors.aliyun.com
+RUN pip3 install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple/ --trusted-host https://pypi.tuna.tsinghua.edu.cn
 
 ADD ./ /root/blog_v2
 
