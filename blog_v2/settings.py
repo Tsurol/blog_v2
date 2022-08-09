@@ -76,11 +76,11 @@ WSGI_APPLICATION = 'blog_v2.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'blog_v2',
+        'NAME': 'blog',
         'USER': 'root',
-        'PASSWORD': 'rootzzl',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
+        'PASSWORD': 'root',
+        'HOST': '1.14.48.95',
+        'PORT': '33306',
     }
 }
 
@@ -89,9 +89,10 @@ DATABASES = {
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
+        "LOCATION": "redis://1.14.48.95:63790/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "PASSWORD": "123456",
         }
     }
 }
